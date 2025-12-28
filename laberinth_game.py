@@ -18,7 +18,7 @@ EXIT_DOOR_COLOR = (255, 140, 0, 255)    # naranja
 COLLTYPE_PLAYER = 1
 COLLTYPE_KEY = 2
 COLLTYPE_EXIT = 3
-COLLTYPE_WALL = 4  # ✅ paredes (internas y externas)
+COLLTYPE_WALL = 4 
 
 
 def add_outer_walls(space, width, height, thickness=5, margin=10):
@@ -36,7 +36,7 @@ def add_outer_walls(space, width, height, thickness=5, margin=10):
         w.friction = 1.0
         w.elasticity = 0.0
         w.color = WALL_COLOR
-        w.collision_type = COLLTYPE_WALL  # ✅
+        w.collision_type = COLLTYPE_WALL  
 
     space.add(*walls)
     return walls
@@ -50,7 +50,7 @@ def add_wall_segments(space, segments, thickness=8, color=INNER_WALL_COLOR):
         s.friction = 1.0
         s.elasticity = 0.0
         s.color = color
-        s.collision_type = COLLTYPE_WALL  # ✅
+        s.collision_type = COLLTYPE_WALL  
         walls.append(s)
 
     space.add(*walls)

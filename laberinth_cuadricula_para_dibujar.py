@@ -35,7 +35,6 @@ def main():
 
     font = pygame.font.SysFont(None, 18)
 
-    # 🔹 Pymunk sigue aquí por coherencia, pero no usamos física todavía
     space = pymunk.Space()
     space.gravity = (0, 0)
 

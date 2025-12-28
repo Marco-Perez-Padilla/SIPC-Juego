@@ -135,7 +135,7 @@ def main():
 
     add_outer_walls(space, W, H, thickness=5, margin=0)
 
-    # ✅ Paredes internas (ejemplo básico de pasillos)
+    # Paredes internas (ejemplo básico de pasillos)
     inner_segments = [
         ((0, 650), (250, 650)),
         ((350, 550), (350, 750)),
