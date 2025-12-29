@@ -379,8 +379,38 @@ def main():
                 annotated_frame = hand_module.draw_landmarks_on_image(rgb_frame, hand_module.detection_result)
                 # Convertir de vuelta a BGR para mostrar con OpenCV
                 annotated_frame_bgr = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
+                
+                # Obtener dimensiones de la imagen para el centro
+                height, width, _ = annotated_frame_bgr.shape
+                
+                # Dibujar el centro de la pantalla
+                center_x, center_y = width // 2, height // 2
+                cv2.circle(annotated_frame_bgr, (center_x, center_y), 5, (0, 255, 0), -1)
+                
+                # Obtener fuerza del jugador
+                fx, fy = hand_module.get_player_force()
+                
+                # Dibujar vector de fuerza (escalado para mejor visualización)
+                force_scale = 50  # Ajusta este valor para hacer el vector más visible
+                end_x = int(center_x + fx * force_scale)
+                end_y = int(center_y + fy * force_scale)
+                
+                # Dibujar línea de fuerza
+                cv2.arrowedLine(annotated_frame_bgr, (center_x, center_y), (end_x, end_y), (0, 0, 255), 2)
+                
+                # Mostrar valores de fuerza como texto
+                force_text = f"Fuerza: ({fx:.2f}, {fy:.2f})"
+                cv2.putText(annotated_frame_bgr, force_text, (10, 30), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+                
+                # Mostrar instrucciones
+                instruction_text = "Mueve tu mano para controlar al jugador"
+                cv2.putText(annotated_frame_bgr, instruction_text, (10, height - 20),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
                 # Mostrar frame
                 cv2.imshow('Control por Mano', annotated_frame_bgr)
+                
                 # Salir si se presiona 'q' en la ventana de OpenCV
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     cap.release()
