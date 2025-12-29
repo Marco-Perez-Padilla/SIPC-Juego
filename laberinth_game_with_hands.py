@@ -446,10 +446,5 @@ def main():
         pygame.display.flip()
         clock.tick(50)
 
-    cap.release()
-    cv2.destroyAllWindows()
-    hand_detector.close()
-
-
 if __name__ == "__main__":
     main()
