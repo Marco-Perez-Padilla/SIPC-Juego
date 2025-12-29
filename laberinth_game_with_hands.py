@@ -352,8 +352,6 @@ def main():
                     sys.exit(0)
                 if event.key == pygame.K_r and game_over:
                     space = reset_game()
-                if event.key == pygame.K_c:  # Tecla C para alternar la ventana de la cámara
-                    show_camera_window = not show_camera_window
 
         # Capturar y procesar frame de la cámara
         ret, frame = cap.read()
@@ -379,8 +377,32 @@ def main():
                 annotated_frame = hand_module.draw_landmarks_on_image(rgb_frame, hand_module.detection_result)
                 # Convertir de vuelta a BGR para mostrar con OpenCV
                 annotated_frame_bgr = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
+                # Obtener dimensiones de la imagen para el centro
+                height, width, _ = annotated_frame_bgr.shape
+                # Dibujar el centro de la pantalla
+                center_x, center_y = width // 2, height // 2
+                cv2.circle(annotated_frame_bgr, (center_x, center_y), 5, (0, 255, 0), -1)
+                # Obtener fuerza del jugador
+                fx, fy = hand_module.get_player_force()
+                # Dibujar vector de fuerza (escalado para mejor visualización)
+                vector_scale = 50  
+                end_x = int(center_x + fx * vector_scale)
+                end_y = int(center_y + fy * vector_scale)
+                # Dibujar línea de fuerza
+                cv2.arrowedLine(annotated_frame_bgr, (center_x, center_y), (end_x, end_y), (0, 0, 255), 2)
+                # Mostrar valores de fuerza como texto
+                force_text = f"Fuerza: ({fx:.2f}, {fy:.2f})"
+                cv2.putText(annotated_frame_bgr, force_text, (10, 30), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+                
+                # Mostrar instrucciones
+                instruction_text = "Mueve tu mano para controlar al jugador"
+                cv2.putText(annotated_frame_bgr, instruction_text, (10, height - 20),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
                 # Mostrar frame
                 cv2.imshow('Control por Mano', annotated_frame_bgr)
+                
                 # Salir si se presiona 'q' en la ventana de OpenCV
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     cap.release()
@@ -397,9 +419,6 @@ def main():
         # Instrucciones para el control
         control_text = font.render("Control: Mueve el dedo índice frente a la cámara", True, (0, 0, 0))
         screen.blit(control_text, (W//2 - control_text.get_width()//2, H - 50))
-        
-        camera_text = font.render("Presiona 'C' para mostrar/ocultar cámara | 'Q' en ventana cámara para salir", True, (0, 0, 0))
-        screen.blit(camera_text, (W//2 - camera_text.get_width()//2, H - 20))
 
         if game_won:
           screen.blit(overlay, (0, 0))
