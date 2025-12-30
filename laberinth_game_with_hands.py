@@ -313,7 +313,7 @@ def main():
     # Inicializar la cámara y MediaPipe usando el módulo existente
     cap = cv2.VideoCapture(0)
     
-    # Inicializar el detector de MediaPipe usando la configuración de tu módulo
+    # Inicializar el detector de MediaPipe 
     BaseOptions = hand_module.BaseOptions
     HandLandmarker = hand_module.HandLandmarker
     HandLandmarkerOptions = hand_module.HandLandmarkerOptions
@@ -383,7 +383,7 @@ def main():
                 cv2.circle(annotated_frame_bgr, (center_x, center_y), 5, (0, 255, 0), -1)
                 # Obtener fuerza del jugador
                 fx, fy = hand_module.get_player_force()
-                # Dibujar vector de fuerza (escalado para mejor visualización)
+                # Dibujar vector de fuerza
                 vector_scale = 50  
                 end_x = int(center_x + fx * vector_scale)
                 end_y = int(center_y + fy * vector_scale)
