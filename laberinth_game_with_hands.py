@@ -6,7 +6,6 @@ import mediapipe as mp
 import cv2
 import numpy as np
 
-# Importar las funciones necesarias de tu módulo
 import hand_force_application as hand_module
 
 WALL_COLOR = (200, 50, 50, 255)         # rojo
