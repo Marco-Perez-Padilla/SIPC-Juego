@@ -379,7 +379,7 @@ def main():
 
     # Crear detector: LIVE_STREAM usa callback (hand_module.get_result)
     options = HandLandmarkerOptions(
-        base_options=BaseOptions(model_asset_path='hand_landmarker.task'),
+        base_options=BaseOptions(model_asset_path=hand_module.model_path),
         running_mode=VisionRunningMode.LIVE_STREAM,
         num_hands=1,
         result_callback=hand_module.get_result
