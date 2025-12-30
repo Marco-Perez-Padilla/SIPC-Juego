@@ -3,25 +3,25 @@ import pygame
 import pymunk
 import pymunk.pygame_util
 
-#  Control por mano 
+# Control por mano 
 import mediapipe as mp
 import cv2
 import numpy as np
 import hand_force_application as hand_module
 
 
-#  COLORES 
+# COLORES (RGBA para debug_draw de pymunk)
 WALL_COLOR = (200, 50, 50, 255)         # rojo: paredes exteriores
 INNER_WALL_COLOR = (50, 50, 200, 255)   # azul: paredes internas
 OBSTACLE_COLOR = (0, 150, 0, 255)       # verde: obstáculo empujable
 DOOR_COLOR = (50, 50, 200, 255)         # azul: puertas con bisagra
 PLAYER_COLOR = (0, 0, 0, 255)           # negro: jugador
 
-KEY_COLOR = (240, 200, 0, 255)          # amarillo: llaves 
-EXIT_DOOR_COLOR = (255, 140, 0, 255)    # naranja: salida 
+KEY_COLOR = (240, 200, 0, 255)          # amarillo: llaves (sensores)
+EXIT_DOOR_COLOR = (255, 140, 0, 255)    # naranja: salida (sensor)
 
 
-# TIPOS DE COLISIÓN 
+#  TIPOS DE COLISIÓN
 # Pymunk permite clasificar shapes por collision_type y crear callbacks por tipo.
 COLLTYPE_PLAYER = 1
 COLLTYPE_KEY = 2
@@ -76,7 +76,7 @@ def add_wall_segments(space, segments, thickness=8, color=INNER_WALL_COLOR):
 
 def add_obstacle_ball(space, pos, radius=18, mass=8, friction=1.2):
     """
-    Obstáculo empujable: círculo dinámico 
+    Obstáculo empujable: círculo dinámico (Body sin body_type => dinámico).
     """
     body = pymunk.Body()
     body.position = pos
@@ -277,7 +277,7 @@ def main():
     add_key(space, (700, 500))
     add_exit_door(space, (400, 100), radius=18)
 
-    # GAME STATE 
+    # GAME STATE
     collected = 0
     game_won = False
     game_over = False
@@ -317,7 +317,7 @@ def main():
         game_over = True
         return True
 
-    # Registro de colisiones 
+    # Registro de colisiones (API moderna de Pymunk)
     space.on_collision(COLLTYPE_PLAYER, COLLTYPE_KEY, begin=on_player_key)
     space.on_collision(COLLTYPE_PLAYER, COLLTYPE_EXIT, begin=on_player_exit)
     space.on_collision(COLLTYPE_PLAYER, COLLTYPE_WALL, begin=on_player_wall)
@@ -343,7 +343,6 @@ def main():
         game_won = False
         game_over = False
 
-        # Re-crear el espacio completo (más fácil que eliminar cosas una por una)
         space2 = pymunk.Space()
         space2.gravity = (0.0, 0.0)
         space2.damping = 0.8
@@ -362,7 +361,6 @@ def main():
         add_key(space2, (700, 500))
         add_exit_door(space2, (400, 100), radius=18)
 
-        # Re-registrar colisiones con las nuevas referencias (y el nuevo space)
         space2.on_collision(COLLTYPE_PLAYER, COLLTYPE_KEY, begin=on_player_key)
         space2.on_collision(COLLTYPE_PLAYER, COLLTYPE_EXIT, begin=on_player_exit)
         space2.on_collision(COLLTYPE_PLAYER, COLLTYPE_WALL, begin=on_player_wall)
@@ -379,7 +377,7 @@ def main():
     HandLandmarkerOptions = hand_module.HandLandmarkerOptions
     VisionRunningMode = hand_module.VisionRunningMode
 
-    # Crear detector
+    # Crear detector: LIVE_STREAM usa callback (hand_module.get_result)
     options = HandLandmarkerOptions(
         base_options=BaseOptions(model_asset_path='hand_landmarker.task'),
         running_mode=VisionRunningMode.LIVE_STREAM,
@@ -393,7 +391,7 @@ def main():
     import time
     start_time = time.time()
 
-    # GAME LOOP
+    # GAME LOOP 
     while True:
         # Eventos de Pygame (salir / reset)
         for event in pygame.event.get():
@@ -439,7 +437,6 @@ def main():
                 annotated_frame_bgr = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
 
                 height, width, _ = annotated_frame_bgr.shape
-                # Dibujar el centro de la pantalla
                 center_x, center_y = width // 2, height // 2
                 cv2.circle(annotated_frame_bgr, (center_x, center_y), 5, (0, 255, 0), -1)
 
@@ -458,7 +455,6 @@ def main():
                 cv2.putText(annotated_frame_bgr, instruction_text, (10, height - 20),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
-                # Mostrar frame
                 cv2.imshow('Control por Mano', annotated_frame_bgr)
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -495,13 +491,13 @@ def main():
             tip = font.render("Pulsa R para intentarlo otra vez", True, (255, 255, 255))
             screen.blit(tip, (W // 2 - tip.get_width() // 2, H // 2 + 10))
 
-        # Física: substeps para estabilidad 
+        # Física: substeps para estabilidad
         DT = 1 / 50.0
         SUBSTEPS = 5
         for _ in range(SUBSTEPS):
             space.step(DT / SUBSTEPS)
 
-        # Flip / FPS
+        #  Flip / FPS 
         pygame.display.flip()
         clock.tick(50)
 

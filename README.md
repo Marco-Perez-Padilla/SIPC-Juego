@@ -1,7 +1,28 @@
 # Proyecto: Practica Juego
 
-Este repositorio contiene los scripts del juego usando **MediaPipe**, **Pymunk** y **Pygame** en Windows.
+Este repositorio contiene los scripts del juego usando **MediaPipe**, **Pymunk** y **Pygame** en Windows. Asimismo, tiene scripts que muestran el desarrollo continuo del juego, así como del control por mano de forma independiente.
 **Nota**: No se incluye el entorno virtual `env-sipc-11` en el repositorio. Cada colaborador debe crearlo localmente.
+
+---
+
+## Descripción del juego
+
+El juego principal se encuentra implementado en el archivo:
+
+- **`laberinth_game_with_hands.py`**
+
+El objetivo del juego es **recolectar tres llaves dentro de un laberinto** sin tocar las paredes.  
+Si el jugador entra en contacto con alguna pared del laberinto, **la partida se pierde automáticamente**.
+
+---
+
+## Sistema de control
+
+El control del personaje se realiza mediante **seguimiento de la mano**, utilizando **MediaPipe**:
+
+- Se detecta la posición del **dedo índice** de la mano.
+- El movimiento del jugador dentro del laberinto depende directamente de la posición del dedo índice captada por la cámara.
+- No se utilizan teclado ni ratón; todo el control es **por gestos de la mano**.
 
 ---
 
@@ -45,9 +66,13 @@ python -m pip install --upgrade pip
 pip install mediapipe pymunk pygame opencv-python
 ```
 
-## Ejecución de los scripts
+## Ejecución del juego
 
-1. Con el entorno virtual activado, ejecutar cualquier script con:
+1. Con el entorno virtual activado, ejecutar el juego principal:
 ```powershell
-python nombre_del_script.py
+python laberinth_game_with_hands.py
 ```
+
+2. Asegúrate de tener la cámara encendida y visible.
+
+3. Mueve el dedo índice frente a la cámara para controlar al jugador dentro del laberinto.
