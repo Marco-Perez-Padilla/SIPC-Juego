@@ -371,7 +371,7 @@ def main():
     # CAMARA + MEDIAPIPE INIT 
     cap = cv2.VideoCapture(0)
 
-    # Reutilizamos clases/config de tu módulo (así mantienes todo centralizado)
+    # Reutilizamos clases/config del módulo (así mantienes todo centralizado)
     BaseOptions = hand_module.BaseOptions
     HandLandmarker = hand_module.HandLandmarker
     HandLandmarkerOptions = hand_module.HandLandmarkerOptions
